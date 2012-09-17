@@ -1,0 +1,58 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <title>Recorder</title>
+    <link rel="stylesheet" href="styles.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<body>
+    <div class="left">
+        <video autoplay id="sourcevid" class="size"></video>
+    </div>
+
+    <div class="right">
+        <canvas id="output" class="size"></canvas>
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+        var socket = new WebSocket("ws://192.168.0.101:8080/");
+        var back = document.getElementById('output');
+        var backcontext = back.getContext('2d');
+        var video = document.getElementsByTagName('video')[0];
+        socket.onopen = function(){ console.log("connected"); }
+
+        var send=function(message)
+        {
+            if(socket.readyState===1)
+            {
+                socket.send(message);
+            }
+            else
+            {
+                console.log("Error: "+socket.readyState);
+            }
+        }
+
+        var failure = function(error){ console.log(error); }
+
+        var globalStream;
+
+        var success = function(stream)
+        {
+            video.src=window.webkitURL.createObjectURL(stream);
+            globalStream=stream;
+        }
+
+        var draw = function()
+        {
+            backcontext.drawImage(video,0,0, back.width, back.height);
+            var stringData= back.toDataURL();
+            //console.log(stringData);
+            send(stringData);
+            setTimeout(draw,1);
+        }
+        navigator.webkitGetUserMedia({video:true, audio:false}, success, failure);
+        draw();
+    </script>
+</body>
+</html>

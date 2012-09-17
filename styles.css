@@ -1,0 +1,19 @@
+.size
+{
+    width: 320px;
+    height: 240px;
+}
+
+.right
+{
+    float:right;
+    position: relative;
+    display: none;
+}
+
+.left
+{
+    float: left;
+    position: relative;
+}
+
