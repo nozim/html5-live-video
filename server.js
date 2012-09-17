@@ -1,5 +1,4 @@
-var sys = require("sys"),
-    express = require('express'),
+var express = require('express'),
     app = express(),
     ws = require("ws");
 
