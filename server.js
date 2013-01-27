@@ -12,19 +12,20 @@ app.configure(function()
 
 app.get('/', function(request, response)
 {
-    response.sendfile('recorder.html');
+    response.sendfile('views/recorder.html');
 });
 
 app.get('/show',function(request,response)
 {
-    response.sendfile('display.html');
+    response.sendfile('views/display.html');
 });
 
-app.listen(8000, '192.168.0.101');
+var local_ip='127.0.0.1';
+app.listen(8000, local_ip);
 
 var senders=[];
-var receiverServer = new ws.Server({host:"192.168.0.101",port:8080});
-var senderServer= new ws.Server({host:"192.168.0.101",port:8008});
+var receiverServer = new ws.Server({host:local_ip, port:8080});
+var senderServer= new ws.Server({host:local_ip, port:8008});
 
 receiverServer.on('error',function(error){ console.log("receiver error "+error)} );
 senderServer.on('error',function(error){ console.log("sender error "+error)} );

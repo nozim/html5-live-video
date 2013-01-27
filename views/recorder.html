@@ -15,7 +15,7 @@
     </div>
 
     <script type="text/javascript" charset="utf-8">
-        var socket = new WebSocket("ws://192.168.0.101:8080/");
+        var socket = new WebSocket("ws://127.0.0.1:8080/");
         var back = document.getElementById('output');
         var backcontext = back.getContext('2d');
         var video = document.getElementsByTagName('video')[0];
@@ -47,10 +47,11 @@
         {
             backcontext.drawImage(video,0,0, back.width, back.height);
             var stringData= back.toDataURL();
-            //console.log(stringData);
             send(stringData);
+            console.log(socket.readyState);
             setTimeout(draw,1);
         }
+
         navigator.webkitGetUserMedia({video:true, audio:false}, success, failure);
         draw();
     </script>
