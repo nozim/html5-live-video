@@ -20,7 +20,8 @@ app.get('/show',function(request,response)
     response.sendfile('views/display.html');
 });
 
-var local_ip='127.0.0.1';
+var local_ip='192.168.0.100';
+
 app.listen(8000, local_ip);
 
 var senders=[];
