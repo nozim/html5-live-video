@@ -1,13 +1,27 @@
-var ws = require("ws");
-var app = require("./http_server");
-var local_ip='192.168.0.100';
+var express = require('express'),
+    app = express(),
+    ws = require("ws");
 
+app.configure(function()
+{
+    app.set('views',__dirname);
+    app.set('view engine', 'jade');
+    app.use(express.static(__dirname));
+    app.engine('html', require('jade').renderFile);
+});
+
+app.get('/', function(request, response)
+{
+    response.sendfile('views/recorder.html');
+});
+
+app.get('/show',function(request,response)
+{
+    response.sendfile('views/display.html');
+});
+
+var local_ip='127.0.0.1';
 app.listen(8000, local_ip);
-
-// accept next client 
-// add it lo clients pool 
-// start broadcasting 
-// app get 
 
 var senders=[];
 var receiverServer = new ws.Server({host:local_ip, port:8080});

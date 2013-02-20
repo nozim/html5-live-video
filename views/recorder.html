@@ -14,8 +14,22 @@
         <canvas id="output" class="size"></canvas>
     </div>
 
+    <div class="left">
+        <img id="displayer"/>
+    </div>
+
     <script type="text/javascript" charset="utf-8">
         var socket = new WebSocket("ws://192.168.0.100:8080/");
+        var acceptor_socket = new WebSocket("ws://192.168.0.100:8008/");
+        var back = document.createElement('canvas');
+        var backcontext = back.getContext('2d');
+        var image = document.getElementById('displayer');
+        acceptor_socket.onopen = function(){ console.log("connected"); }
+        acceptor_socket.onmessage = function(data)
+        {
+            image.src=data.data;
+        }
+
         var back = document.getElementById('output');
         var backcontext = back.getContext('2d');
         var video = document.getElementsByTagName('video')[0];
