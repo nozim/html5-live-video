@@ -4,6 +4,7 @@
 
     <title>Recorder</title>
     <link rel="stylesheet" href="styles.css" type="text/css" media="screen" charset="utf-8">
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
 </head>
 <body>
     <div class="left">
@@ -21,12 +22,13 @@
     </div>
 
     <script type="text/javascript" charset="utf-8">
+
+        var token = CryptoJS.MD5(Date.now().toString()).toString();
         var socket = new WebSocket("ws://192.168.0.100:8080/");
         var back = document.getElementById('output');
         var backcontext = back.getContext('2d');
         var video = document.getElementsByTagName('video')[0];
-        socket.onopen = function(){ console.log("connected"); }
-
+        
         var send=function(message)
         {
             if(socket.readyState===1)
@@ -39,20 +41,26 @@
             }
         }
 
-        var failure = function(error){ console.log(error); }
+        socket.onopen = function()
+        {
+            console.log("Sender connected"); 
+            send(JSON.stringify({command:"INIT", token: token }))
+            console.log("Sender token has been sent"); 
+        }
 
+        var failure = function(error){ console.log(error); }
 
         var success = function(stream)
         {
-            video.src=window.webkitURL.createObjectURL(stream);
+            video.src = window.webkitURL.createObjectURL(stream);
         }
 
         var draw = function()
         {
             backcontext.drawImage(video,0,0, back.width, back.height);
             var stringData= back.toDataURL();
-            send(stringData);
-            console.log(socket.readyState);
+            var string_to_send = JSON.stringify({command:"DATA", data: stringData });
+            send(string_to_send);
             setTimeout(draw, 50);
         }
 
@@ -61,7 +69,10 @@
 
         var acceptor_socket = new WebSocket("ws://192.168.0.100:8008/");
         var image = document.getElementById('displayer');
-        acceptor_socket.onopen = function(){ console.log("connected"); }
+        acceptor_socket.onopen = function()
+        { 
+            console.log("connected");
+        }
         acceptor_socket.onmessage = function(data)
         {
             image.src=data.data;

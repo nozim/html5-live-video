@@ -30,13 +30,20 @@ var handleReceiverConnection = function(receiver)
 
 var handleReceiverMessage = function(data)
 {
-    senders.forEach(function(sender)
+    message = JSON.parse(data)
+    switch(message.command)
     {
-        if(sender.readyState===1)
-        {
-            sender.send(data);
-        };
-    });
+        case "INIT": break;
+        case "DATA":
+            senders.forEach(function(sender)
+            {
+                if(sender.readyState===1)
+                {
+                    sender.send(message.data);
+                };
+            });
+            break;
+    }
 }
 
 var handleReceiverClose=function()
