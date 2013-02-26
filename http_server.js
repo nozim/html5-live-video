@@ -13,9 +13,4 @@ app.get('/', function(request, response)
                 response.sendfile('views/recorder.html');
         });
 
-app.get('/show',function(request,response)
-        {
-                response.sendfile('views/display.html');
-        });
-
 module.exports = app;
