@@ -1,5 +1,6 @@
 var ws = require("ws");
 var app = require("./http_server");
+var _ = require('lodash');
 var local_ip='192.168.0.100';
 
 app.listen(8000, local_ip);
@@ -25,6 +26,7 @@ var handleSenderConnection = function(sender)
     });
 }
 
+
 var handleReceiverConnection = function(receiver)
 {
     receiver.on('message', function(data)
@@ -34,12 +36,13 @@ var handleReceiverConnection = function(receiver)
         {
             case "INIT": 
                 receivers[message.token] = receiver;
+                console.log("Receiver "+message.token+" has been added to receivers list");
                 break;
             case "DATA":
-                console.log(message.command);
                 for(var key in senders)
                 {
-                    senders[key].send(data)      
+                    if(!_.isEqual(receivers[key],receiver)) 
+                        senders[key].send(data)      
                 }
             break;
         }
