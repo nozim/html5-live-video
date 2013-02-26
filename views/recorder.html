@@ -24,6 +24,7 @@
     <script type="text/javascript" charset="utf-8">
 
         var token = CryptoJS.MD5(Date.now().toString()).toString();
+        var INIT_MESSAGE = {command:"INIT", token: token };
         var socket = new WebSocket("ws://192.168.0.100:8080/");
         var back = document.getElementById('output');
         var backcontext = back.getContext('2d');
@@ -41,10 +42,15 @@
             }
         }
 
+        socket.onmessage = function(data)
+        {
+            console.log(data);
+        }
+
         socket.onopen = function()
         {
             console.log("Sender connected"); 
-            send(JSON.stringify({command:"INIT", token: token }))
+            send(JSON.stringify(INIT_MESSAGE))
             console.log("Sender token has been sent"); 
         }
 
@@ -69,13 +75,17 @@
 
         var acceptor_socket = new WebSocket("ws://192.168.0.100:8008/");
         var image = document.getElementById('displayer');
+
         acceptor_socket.onopen = function()
         { 
-            console.log("connected");
+            console.log("Acceptor socket connected");
+            acceptor_socket.send(JSON.stringify(INIT_MESSAGE))
         }
+
         acceptor_socket.onmessage = function(data)
         {
-            image.src=data.data;
+            message=JSON.parse(data.data);
+            image.src=message.data;
         }
 
 

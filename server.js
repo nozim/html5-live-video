@@ -4,12 +4,8 @@ var local_ip='192.168.0.100';
 
 app.listen(8000, local_ip);
 
-// accept next client 
-// add it lo clients pool 
-// start broadcasting 
-// app get 
-
-var senders=[];
+var senders={}
+var receivers={}
 var receiverServer = new ws.Server({host:local_ip, port:8080});
 var senderServer= new ws.Server({host:local_ip, port:8008});
 
@@ -18,32 +14,37 @@ senderServer.on('error',function(error){ console.log("sender error "+error)} );
 
 var handleSenderConnection = function(sender)
 {
-    senders.push(sender);
-    console.log("Sender "+senders.length+" has been added to senders list");
+    sender.on('message', function(data)
+    {
+        message = JSON.parse(data);  
+        if(message.command=="INIT")
+        {
+            senders[message.token] = sender;
+            console.log("Sender "+message.token+" has been added to senders list");
+        }
+    });
 }
 
 var handleReceiverConnection = function(receiver)
 {
-    receiver.on('message', handleReceiverMessage);
-    receiver.on('close', handleReceiverClose);
-}
-
-var handleReceiverMessage = function(data)
-{
-    message = JSON.parse(data)
-    switch(message.command)
+    receiver.on('message', function(data)
     {
-        case "INIT": break;
-        case "DATA":
-            senders.forEach(function(sender)
-            {
-                if(sender.readyState===1)
+        message = JSON.parse(data)
+        switch(message.command)
+        {
+            case "INIT": 
+                receivers[message.token] = receiver;
+                break;
+            case "DATA":
+                console.log(message.command);
+                for(var key in senders)
                 {
-                    sender.send(message.data);
-                };
-            });
+                    senders[key].send(data)      
+                }
             break;
-    }
+        }
+    });
+    receiver.on('close', handleReceiverClose);
 }
 
 var handleReceiverClose=function()
