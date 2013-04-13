@@ -25,7 +25,7 @@
 
         var token = CryptoJS.MD5(Date.now().toString()).toString();
         var INIT_MESSAGE = {command:"INIT", token: token };
-        var socket = new WebSocket("ws://192.168.0.100:8080/");
+        var socket = new WebSocket("ws://192.168.0.101:8080/");
         var back = document.getElementById('output');
         var backcontext = back.getContext('2d');
         var video = document.getElementsByTagName('video')[0];
