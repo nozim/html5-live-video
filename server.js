@@ -5,6 +5,8 @@ var local_ip='192.168.0.101';
 
 app.listen(8000, local_ip);
 
+
+// some comment here
 var senders={}
 var receivers={}
 var receiverServer = new ws.Server({host:local_ip, port:8080});
