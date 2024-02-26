@@ -15,6 +15,9 @@ var senderServer= new ws.Server({host:local_ip, port:8008});
 receiverServer.on('error',function(error){ console.log("receiver error "+error)} );
 senderServer.on('error',function(error){ console.log("sender error "+error)} );
 
+// some changes here 
+
+
 var handleSenderConnection = function(sender)
 {
     sender.on('message', function(data)
