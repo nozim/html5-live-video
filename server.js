@@ -4,7 +4,6 @@ var _ = require('lodash');
 var local_ip='192.168.0.101';
 
 app.listen(8000, local_ip);
-// some other comment here
 
 // some comment here
 var senders={}
@@ -14,9 +13,6 @@ var senderServer= new ws.Server({host:local_ip, port:8008});
 
 receiverServer.on('error',function(error){ console.log("receiver error "+error)} );
 senderServer.on('error',function(error){ console.log("sender error "+error)} );
-
-// some changes here 
-
 
 var handleSenderConnection = function(sender)
 {
