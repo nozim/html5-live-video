@@ -1,5 +1,8 @@
 var express = require('express'), app = express();
 
+
+// test foo bar baz
+
 app.configure(function()
         {
             app.set('views',__dirname);
